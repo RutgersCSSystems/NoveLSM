@@ -1,9 +1,10 @@
 #!/bin/bash
 #set -x
 
-NUMTHREAD=1
-BENCHMARKS="fillrandom,readrandom"
-NUMKEYS="1000000"
+NUMTHREAD=8
+BENCHMARKS="readrandom"
+BENCHMARKSWRITE="fillrandom"
+NUMKEYS="10000000"
 #NoveLSM specific parameters
 #NoveLSM uses memtable levels, always set to num_levels 2
 #write_buffer_size DRAM memtable size in MBs
@@ -30,11 +31,10 @@ MAKE() {
 
 SETUP
 MAKE
-$APP_PREFIX $DBBENCH/db_bench --threads=$NUMTHREAD --num=$NUMKEYS \
---benchmarks=$BENCHMARKS --value_size=$VALUSESZ $OTHERPARAMS --num_read_threads=$NUMREADTHREADS
-SETUP
+$APP_PREFIX $DBBENCH/db_bench --threads=1 --num=$NUMKEYS --benchmarks=$BENCHMARKSWRITE --value_size=$VALUSESZ $OTHERPARAMS --num_read_threads=$NUMREADTHREADS
+#SETUP
 
 #Run all benchmarks
 $APP_PREFIX $DBBENCH/db_bench --threads=$NUMTHREAD --num=$NUMKEYS --value_size=$VALUSESZ \
-$OTHERPARAMS --num_read_threads=$NUMREADTHREADS
+$OTHERPARAMS --num_read_threads=$NUMREADTHREADS --use_existing_db=1 --benchmarks=$BENCHMARKS
 

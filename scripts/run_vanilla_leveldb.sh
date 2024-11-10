@@ -2,7 +2,9 @@
 #set -x
 NUMTHREAD=1
 BENCHMARKS="fillrandom,readrandom"
-NUMKEYS="1000000"
+BENCHMARKSFILL="fillrandom"
+BENCHMARKSREAD="readrandom"
+NUMKEYS="10000000"
 let BUFFBYTES=$DRAMBUFFSZ*1024*1024
 OTHERPARAMS="--write_buffer_size=$BUFFBYTES"
 VALUSESZ=4096
@@ -25,9 +27,11 @@ MAKE() {
 
 SETUP
 MAKE
-$DBBENCH_VANLILLA/db_bench --threads=$NUMTHREAD --num=$NUMKEYS --benchmarks=$BENCHMARKS --value_size=$VALUSESZ $OTHERPARAMS
-SETUP
+$DBBENCH_VANLILLA/db_bench --threads=1 --num=$NUMKEYS --benchmarks=$BENCHMARKSFILL --value_size=$VALUSESZ $OTHERPARAMS
+#SETUP
+$DBBENCH_VANLILLA/db_bench --threads=$NUMTHREAD --num=$NUMKEYS --benchmarks=$BENCHMARKSREAD --value_size=$VALUSESZ $OTHERPARAMS --use_existing_db=1
+#SETUP
 
 #Run all benchmarks
-$DBBENCH_VANLILLA/db_bench --threads=$NUMTHREAD --num=$NUMKEYS --value_size=$VALUSESZ $OTHERPARAMS
+#$DBBENCH_VANLILLA/db_bench --threads=$NUMTHREAD --num=$NUMKEYS --value_size=$VALUSESZ $OTHERPARAMS
 
